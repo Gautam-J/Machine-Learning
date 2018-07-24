@@ -8,8 +8,7 @@ from sklearn.preprocessing import normalize
 
 def preprocess():
         
-    df = pd.read_csv("F:\Gautam\Tech Stuff\Python Projects\Datasets\iris.csv",
-                     index_col = False, header = None)
+    df = pd.read_csv("iris.csv", index_col = False, header = None)
 
     df.columns = ['Sepal Length', 'Sepal Width', 'Petal Length',
                   'Petal Width' , 'Class']
