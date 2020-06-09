@@ -15,7 +15,7 @@ dataset = {
 # new data to classify / use for prediction
 new_data = np.array([np.random.uniform(-5, 5, 1)[0], np.random.uniform(0, 12, 1)[0]])
 # uncomment below line for manual entry
-new_data = np.array([1, 6.5])
+# new_data = np.array([1, 6.5])
 
 # ----------------------------------------KNN Prediction-----------------------------------------
 
@@ -64,4 +64,7 @@ plt.scatter(new_data[0], new_data[1], color='g', label='New Data')
 
 plt.legend()
 plt.title(f'Prediction: {vote_result}')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.savefig('Animations/KNN_2D.png')
 plt.show()
