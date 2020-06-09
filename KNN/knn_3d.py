@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import animation
 from mpl_toolkits.mplot3d import Axes3D
 from collections import Counter
 from sklearn.datasets import make_blobs
@@ -70,5 +71,16 @@ ax.set_ylabel('Feature 2')
 ax.set_zlabel('Feature 3')
 plt.title(f'Prediction: {vote_result}')
 ax.legend()
-plt.savefig('Animations/KKN_3D.png')
+
+
+def animate(i):
+    ax.view_init(elev=20., azim=i)
+
+
+ani = animation.FuncAnimation(fig, animate, frames=360, interval=20)
+
+# save animation as .mp4 (takes time, comment if needed)
+mywriter = animation.FFMpegWriter(fps=60)
+ani.save('Animations/KNN_3D_rotating.mp4', writer=mywriter)
+# show the animation
 plt.show()
