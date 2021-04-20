@@ -33,14 +33,17 @@ class GradientDescent2D:
         else:
             self.x = arg
 
-    def isConverged(self):
-        return abs(self.x - (-1.59791)) <= self.epsilon
+    def isConverged(self, prevX):
+        return abs(self.x - prevX) <= self.epsilon
 
     def run(self):
         # log the starting point of x
         self.history['x'].append(self.x)
 
         for i in range(self.maxIterations):
+            # keeping track of prev X for checking convergence
+            prevX = self.x
+
             gradient = self.grad_f(self.x)
             self.x = self.x - (self.alpha * gradient)
 
@@ -48,7 +51,7 @@ class GradientDescent2D:
             self.history['x'].append(self.x)
             self.history['grads'].append(gradient)
 
-            if self.isConverged():
+            if self.isConverged(prevX):
                 print('[INFO] Gradient Descent converged at iteration', i + 1)
                 break
 
