@@ -14,6 +14,17 @@ class GradientDescent2D:
 
         self.x = None
         self.setStartPoint(start_point)
+        self.printStats()
+
+    def printStats(self):
+        print('=' * 80)
+        print('[INFO]\t\tHyperparameters')
+        print('=' * 80)
+        print(f'[INFO] Learning Rate: {self.alpha}')
+        print(f'[INFO] Maximum Iterations: {self.maxIterations}')
+        print(f'[INFO] Starting Point of x: {self.x}')
+        print(f'[INFO] Epsilon for checking convergence: {self.epsilon}')
+        print('=' * 80)
 
     def setStartPoint(self, arg):
         if type(arg) == int or type(arg) == float:
