@@ -15,32 +15,22 @@ def getArguments():
     parser = argparse.ArgumentParser(description='Parameters to tweak gradient descent.')
 
     parser.add_argument('--lr', type=float, default=3e-2,
-                        help='Learning rate. Set to 0.2 to see gradient descent NOT converging')
+                        help='Learning rate. Set to 0.2 to see gradient descent NOT converging. Defaults to 0.03')
     parser.add_argument('--max_iterations', type=int, default=150,
-                        help='Maximum iterations for gradient descent to run')
+                        help='Maximum iterations for gradient descent to run. Defaults to 150')
     parser.add_argument('--start_point', type=float, default=1.0,
-                        help='Starting point for gradient descent')
+                        help='Starting point for gradient descent. Defaults to 1.0')
     parser.add_argument('-e', '--epsilon', type=float, default=1e-3,
-                        help='Epsilon for checking convergence')
+                        help='Epsilon for checking convergence. Defaults to 0.001')
     parser.add_argument('-r', '--random', action='store_true',
-                        help='Flag to initialize a random starting point. If set to True, start_point will be discarded')
+                        help='Flag to initialize a random starting point')
+    parser.add_argument('-s', '--save', action='store_true',
+                        help="Flag to plot visualizations and save animations")
 
     return parser.parse_args()
 
 
-def main():
-    args = getArguments()
-
-    gd = GradientDescent2D(alpha=args.lr,
-                           max_iterations=args.max_iterations,
-                           start_point=args.start_point,
-                           random=args.random,
-                           epsilon=args.epsilon)
-    gd.run()
-
-    print(f'[DEBUG] Value of x: {gd.x:.2f}')
-    print('[DEBUG] Expected value: -1.59791')
-
+def plotAndSaveGraphs(gd, args):
     fig = plt.figure(figsize=(16, 9))
     ax1 = fig.add_subplot(111)
 
@@ -116,6 +106,23 @@ def main():
     plt.savefig(fileName)
     print(f'[INFO] Distribution of gradients saved to {fileName}')
     plt.close()
+
+
+def main():
+    args = getArguments()
+
+    gd = GradientDescent2D(alpha=args.lr,
+                           max_iterations=args.max_iterations,
+                           start_point=args.start_point,
+                           random=args.random,
+                           epsilon=args.epsilon)
+    gd.run()
+
+    print(f'[DEBUG] Value of x: {gd.x:.2f}')
+    print('[DEBUG] Expected value: -1.59791')
+
+    if args.save:
+        plotAndSaveGraphs(gd, args)
 
 
 if __name__ == "__main__":
