@@ -7,7 +7,7 @@ class GradientDescent2D:
                  epsilon=1e-3, random=False):
         self.alpha = alpha
         self.maxIterations = max_iterations
-        self.epsilon=epsilon
+        self.epsilon = epsilon
         self.history = {
             'x': [],
             'grads': [],

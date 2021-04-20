@@ -32,10 +32,10 @@ def main():
     args = getArguments()
 
     gd = GradientDescent2D(alpha=args.lr,
-                        max_iterations=args.max_iterations,
-                        start_point=args.start_point,
-                        random=args.random,
-                        epsilon=args.epsilon)
+                           max_iterations=args.max_iterations,
+                           start_point=args.start_point,
+                           random=args.random,
+                           epsilon=args.epsilon)
     gd.run()
 
     print(f'[DEBUG] Value of x: {gd.x:.2f}')
@@ -63,11 +63,9 @@ def main():
     ax1.set_ylabel('f(x)')
     ax1.legend()
 
-
     def init():
         line1.set_data([], [])
         return line1,
-
 
     def animate(i):
         x = xHistory[i]
@@ -80,7 +78,7 @@ def main():
 
     lengthOfVideo = 5
     nFrames = totalIterations + 1
-    interval = lengthOfVideo  * 1000 / nFrames
+    interval = lengthOfVideo * 1000 / nFrames
     fps = (1 / (interval / 1000))
 
     print('=' * 80)
@@ -93,8 +91,8 @@ def main():
     print('=' * 80)
 
     ani = animation.FuncAnimation(fig, animate, init_func=init,
-                                frames=nFrames, blit=True,
-                                interval=interval, repeat=False)
+                                  frames=nFrames, blit=True,
+                                  interval=interval, repeat=False)
 
     # make directories
     pathToDirectory = os.path.join('visualizations', 'gradient_descent')
