@@ -22,7 +22,7 @@ def getArguments():
                         help='Starting point for gradient descent')
     parser.add_argument('-e', '--epsilon', type=float, default=1e-3,
                         help='Epsilon for checking convergence')
-    parser.add_argument('-r', '--random', type=bool, default=False,
+    parser.add_argument('-r', '--random', action='store_true',
                         help='Flag to initialize a random starting point. If set to True, start_point will be discarded')
 
     return parser.parse_args()
