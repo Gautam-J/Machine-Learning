@@ -1,6 +1,6 @@
 import numpy as np
 
-from gradient_descent_2d import GradientDescent2D
+from .gradient_descent_2d import GradientDescent2D
 
 
 class GradientDescent3D(GradientDescent2D):
@@ -72,11 +72,3 @@ class GradientDescent3D(GradientDescent2D):
         partialY = 2 * (x**2 + 2 * y * (x + y**2 - 7) + y - 11)
 
         return np.array([partialX, partialY])
-
-
-if __name__ == '__main__':
-    gd = GradientDescent3D()
-    gd.run()
-
-    print(f'[INFO] Value of x: {gd.x}')
-    print('[INFO] Expected value: [3.584428, -1.848126]')

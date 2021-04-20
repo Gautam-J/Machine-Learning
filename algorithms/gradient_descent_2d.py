@@ -68,11 +68,3 @@ class GradientDescent2D:
     def grad_f(x):
         # derivative of the above function
         return 4 * x**3 + 6 * x**2 + 1
-
-
-if __name__ == '__main__':
-    gd = GradientDescent2D()
-    gd.run()
-
-    print(f'[INFO] Value of x: {gd.x:.5f}')
-    print('[INFO] Expected value: -1.59791')
