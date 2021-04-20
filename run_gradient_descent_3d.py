@@ -1,0 +1,150 @@
+import os
+import time
+import argparse
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib import animation
+
+from algorithms.gradient_descent_3d import GradientDescent3D
+
+plt.style.use('seaborn')
+
+
+def getArguments():
+    parser = argparse.ArgumentParser(description='Parameters to tweak gradient descent.')
+
+    parser.add_argument('--lr', type=float, default=3e-3,
+                        help='Learning rate. Set to 0.2 to see gradient descent NOT converging. Defaults to 0.03')
+    parser.add_argument('--max_iterations', type=int, default=150,
+                        help='Maximum iterations for gradient descent to run. Defaults to 150')
+    parser.add_argument('--start_x', type=float, default=0.62,
+                        help='Starting X point for gradient descent. Defaults to 0.62')
+    parser.add_argument('--start_y', type=float, default=-6.0,
+                        help='Starting Y point for gradient descent. Defaults to -6.0')
+    parser.add_argument('-e', '--epsilon', type=float, default=1e-3,
+                        help='Epsilon for checking convergence. Defaults to 0.001')
+    parser.add_argument('-r', '--random', action='store_true',
+                        help='Flag to initialize a random starting point')
+    parser.add_argument('-s', '--save', action='store_true',
+                        help="Flag to plot visualizations and save animations")
+
+    return parser.parse_args()
+
+
+def animate(i, dataset, line, c_line):
+    line.set_data(dataset[0:2, :i])
+    line.set_3d_properties(dataset[2, :i])
+    c_line.set_data(dataset[0:2, :i])
+    return line, c_line
+
+
+def plotAndSaveGraphs(gd, args):
+    fig = plt.figure(figsize=(16, 9))
+    ax = fig.add_subplot(121, projection='3d')
+    ax2 = fig.add_subplot(122)
+    ax.view_init(elev=30, azim=130)
+
+    x = np.linspace(-6, 6, 25)
+    y = np.linspace(-6, 6, 25)
+    X, Y = np.meshgrid(x, y)  # all possible combinations of x and y
+    Z = gd.f(X, Y)
+    ax.plot_surface(X, Y, Z, cmap='gray', alpha=0.8)
+
+    levels = np.linspace(0, 500, 30)
+    ax2.contourf(X, Y, Z, levels, cmap='jet', alpha=0.5)
+
+    # destructure history object
+    history = gd.getHistory()
+    xHistory = np.array(history['x'])
+    yHistory = np.array(history['y'])
+    zHistory = gd.f(xHistory, yHistory)
+    dataset = np.array([xHistory, yHistory, zHistory])
+    xGradHistory = history['gradsX']
+    yGradHistory = history['gradsY']
+    totalIterations = len(xHistory) - 1
+
+    line = ax.plot(dataset[0], dataset[1], dataset[2], label='optimization', c='r', marker='.', alpha=0.4)[0]
+    ax.set_title(f'Iterations: {totalIterations} lr: {args.lr}')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('f(x, y)')
+    ax.legend()
+
+    c_line = ax2.plot(dataset[0], dataset[1], label='optimization', c='r', marker='.', alpha=0.4)[0]
+
+    lengthOfVideo = 5
+    nFrames = totalIterations + 1
+    interval = lengthOfVideo * 1000 / nFrames
+    fps = (1 / (interval / 1000))
+
+    print('=' * 80)
+    print('[INFO]\t\tParameters for Animation')
+    print('=' * 80)
+    print(f'[INFO] Duration of video: {lengthOfVideo} seconds')
+    print(f'[DEBUG] Total number of frames: {nFrames}')
+    print(f'[DEBUG] Interval for each frame: {interval:.2f}')
+    print(f'[DEBUG] FPS of video: {fps}')
+    print('=' * 80)
+
+    ani = animation.FuncAnimation(fig, animate, frames=nFrames, blit=False,
+                                  interval=interval, repeat=False,
+                                  fargs=(dataset, line, c_line))
+
+    # make directories
+    pathToDirectory = os.path.join('visualizations', 'gradient_descent')
+    if not os.path.exists(pathToDirectory):
+        os.makedirs(pathToDirectory)
+
+    # save animation
+    fileName = os.path.join(pathToDirectory, 'GradientDescent3D.mp4')
+    print('[INFO] Saving animation...')
+    startTime = time.time()
+    ani.save(fileName, fps=fps)
+    timeDifference = time.time() - startTime
+    print(f'[INFO] Animation saved to {fileName}. Took {timeDifference:.2f} seconds.')
+    plt.close()
+
+    # save distribution of gradients
+    fileName = os.path.join(pathToDirectory, 'DistributionOfGradients3D.png')
+    fig = plt.figure(figsize=(8, 6))
+
+    ax1 = fig.add_subplot(121)
+    sns.kdeplot(x=xGradHistory, fill=True, ax=ax1)
+    ax1.set_xlabel('Gradients of x')
+    ax1.set_title('Distribution of Gradients in x-axis')
+
+    ax2 = fig.add_subplot(122)
+    sns.kdeplot(x=yGradHistory, fill=True, ax=ax2)
+    ax2.set_xlabel('Gradients of y')
+    ax2.set_title('Distribution of Gradients in y-axis')
+
+    plt.savefig(fileName)
+    print(f'[INFO] Distribution of gradients saved to {fileName}')
+    plt.close()
+
+
+def main():
+    args = getArguments()
+    start_point = [args.start_x, args.start_y]
+
+    gd = GradientDescent3D(alpha=args.lr,
+                           max_iterations=args.max_iterations,
+                           start_point=start_point,
+                           random=args.random,
+                           epsilon=args.epsilon)
+    gd.run()
+
+    print(f'[DEBUG] Value of x: {gd.x}')
+    print('[DEBUG] Expected values:')
+    print('[DEBUG]\t\t[3.584428, -1.848126]')
+    print('[DEBUG]\t\t[-3.779310, -3.283186]')
+    print('[DEBUG]\t\t[-2.805118, 3.131312]')
+    print('[DEBUG]\t\t[3, 2]')
+
+    if args.save:
+        plotAndSaveGraphs(gd, args)
+
+
+if __name__ == '__main__':
+    main()
