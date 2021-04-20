@@ -2,5 +2,7 @@
 .ipynb_checkpoints/
 __pycache__/
 
+visualizations/
+
 *.mp4
 *.png
