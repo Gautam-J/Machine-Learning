@@ -19,7 +19,7 @@ class GradientDescent2D:
 
     def printStats(self):
         print('=' * 80)
-        print('[INFO]\t\tHyperparameters for Gradient Descent 2D')
+        print('[INFO]\t\tHyperparameters for Gradient Descent')
         print('=' * 80)
         print(f'[INFO] Learning Rate: {self.alpha}')
         print(f'[INFO] Maximum Iterations: {self.maxIterations}')
