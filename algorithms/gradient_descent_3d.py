@@ -62,14 +62,15 @@ class GradientDescent3D(GradientDescent2D):
         '''
         return (x**2 + y - 11)**2 + (x + y**2 - 7)**2
 
-
     @staticmethod
     def grad_f(X):
         x = X[0]
         y = X[1]
+
         # partial derivatives of the above function
         partialX = 2 * (2 * x * (x**2 + y - 11) + x + y**2 - 7)
         partialY = 2 * (x**2 + 2 * y * (x + y**2 - 7) + y - 11)
+
         return np.array([partialX, partialY])
 
 
@@ -79,36 +80,3 @@ if __name__ == '__main__':
 
     print(f'[INFO] Value of x: {gd.x}')
     print('[INFO] Expected value: [3.584428, -1.848126]')
-
-    # TODO: Plot the function, and self.x values
-    # TODO: Plot the distribution of x and y as sbs subplots
-
-# # -------------------------------VISUALIZATION---------------------
-
-# x = np.linspace(-6, 6, 100)
-# y = np.linspace(-6, 6, 100)
-# X, Y = np.meshgrid(x, y)  # all possible combinations of x and y
-# Z = f(X, Y)
-# x_his = np.array(history['x'])
-# y_his = np.array(history['y'])
-
-# fig = plt.figure(figsize=(10, 7))
-
-# # surface plot
-# ax1 = fig.add_subplot(121, projection='3d')
-# ax1.plot_surface(X, Y, Z, cmap='jet', alpha=0.5)
-
-# ax1.set_title(f'Iterations: {max_iters} lr={alpha}')
-
-# # contour plot
-# ax2 = fig.add_subplot(122)
-# levels = np.linspace(0, 500, 30)
-# ax2.contour(X, Y, Z, levels, cmap='jet', alpha=0.5)
-# ax2.contourf(X, Y, Z, levels, cmap='jet', alpha=0.5)
-
-# for i in range(len(x_his)):
-#     ax1.scatter(x_his[i], y_his[i], f(x_his[i], y_his[i]), c='r', marker='*', alpha=0.5)
-#     ax2.scatter(x_his[i], y_his[i], c='r', marker='*', alpha=0.3)
-#     plt.pause(0.001)
-
-# plt.show()
