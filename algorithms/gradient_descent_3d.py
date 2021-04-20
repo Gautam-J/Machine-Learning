@@ -5,8 +5,8 @@ from .gradient_descent_2d import GradientDescent2D
 
 class GradientDescent3D(GradientDescent2D):
 
-    def __init__(self, alpha=3e-3, max_iterations=200,
-                 start_point=[0.62, -4.40], epsilon=1e-3, random=False):
+    def __init__(self, alpha=3e-3, max_iterations=150,
+                 start_point=[0.62, -6.0], epsilon=1e-3, random=False):
         super().__init__(alpha=alpha, max_iterations=max_iterations,
                          start_point=start_point, epsilon=epsilon,
                          random=random)
