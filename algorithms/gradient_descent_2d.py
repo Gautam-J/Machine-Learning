@@ -3,7 +3,8 @@ import numpy as np
 
 class GradientDescent2D:
 
-    def __init__(self, alpha=3e-2, max_iterations=150, start_point=1.0, epsilon=1e-3):
+    def __init__(self, alpha=3e-2, max_iterations=150, start_point=1.0,
+                 epsilon=1e-3, random=False):
         self.alpha = alpha
         self.maxIterations = max_iterations
         self.epsilon=epsilon
@@ -13,12 +14,12 @@ class GradientDescent2D:
         }
 
         self.x = None
-        self.setStartPoint(start_point)
+        self.setStartPoint(start_point, random)
         self.printStats()
 
     def printStats(self):
         print('=' * 80)
-        print('[INFO]\t\tHyperparameters')
+        print('[INFO]\t\tHyperparameters for Gradient Descent 2D')
         print('=' * 80)
         print(f'[INFO] Learning Rate: {self.alpha}')
         print(f'[INFO] Maximum Iterations: {self.maxIterations}')
@@ -26,13 +27,11 @@ class GradientDescent2D:
         print(f'[INFO] Epsilon for checking convergence: {self.epsilon}')
         print('=' * 80)
 
-    def setStartPoint(self, arg):
-        if type(arg) == int or type(arg) == float:
-            self.x = arg
-        elif arg == 'random':
+    def setStartPoint(self, arg, random):
+        if random:
             self.x = np.random.uniform(-2.5, 1)
         else:
-            raise ValueError('start_point must be either "random" or a numerical value')
+            self.x = arg
 
     def isConverged(self):
         return abs(self.x - (-1.59791)) <= self.epsilon
