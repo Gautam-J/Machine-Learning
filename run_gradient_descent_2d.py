@@ -112,6 +112,7 @@ def plotAndSaveGraphs(gd, args):
 
 def main():
     args = getArguments()
+    print('[DEBUG]', args)
 
     gd = GradientDescent2D(alpha=args.lr,
                            max_iterations=args.max_iterations,
