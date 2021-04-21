@@ -70,7 +70,7 @@ def plotAndSaveGraphs(gd, args):
     print('=' * 80)
     print(f'[INFO] Duration of video: {lengthOfVideo} seconds')
     print(f'[DEBUG] Total number of frames: {nFrames}')
-    print(f'[DEBUG] Interval for each frame: {interval:.2f}')
+    print(f'[DEBUG] Interval for each frame: {interval}')
     print(f'[DEBUG] FPS of video: {fps}')
     print('=' * 80)
 
@@ -120,7 +120,7 @@ def main():
                            epsilon=args.epsilon)
     gd.run()
 
-    print(f'[DEBUG] Value of x: {gd.x:.2f}')
+    print(f'[DEBUG] Value of x: {gd.x}')
     print('[DEBUG] Expected value: -1.59791')
 
     plotAndSaveGraphs(gd, args)
