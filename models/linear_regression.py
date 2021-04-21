@@ -3,7 +3,7 @@ import numpy as np
 
 class LinearRegression:
 
-    def __init__(self, x, y, alpha=3e-2, max_epochs=10, epsilon=1e-3,
+    def __init__(self, x, y, alpha=3e-2, max_epochs=10, epsilon=1e-2,
                  batch_size=10):
         self.x = np.concatenate((np.ones((x.shape[0], 1)), x), axis=1)
         self.y = y
@@ -15,7 +15,6 @@ class LinearRegression:
         self.history = {
             'theta': [],
             'cost': [],
-            'gradients': []
         }
 
         self.theta = np.random.normal(loc=0.0, scale=1.0, size=(self.x.shape[1], 1))
@@ -60,7 +59,6 @@ class LinearRegression:
                 # log metrics
                 self.history['theta'].append(self.theta.squeeze().tolist())
                 self.history['cost'].append(cost)
-                self.history['gradients'].append(gradients)
 
                 if self.isConverged():
                     print(f'[INFO] Gradient Descent converged at Epoch: {i + 1}, iteration: {j + 1}')
