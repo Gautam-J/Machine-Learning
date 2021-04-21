@@ -32,8 +32,8 @@ def getArguments():
                         help="Flag to perform mean normalization and feature scaling. Defaults to True")
     parser.add_argument('-m', '--n_samples', type=int, default=200,
                         help="Number of training examples. Defaults to 200")
-    parser.add_argument('--noise', type=float, default=10.0,
-                        help="Noise of the dataset. Defaults to 10.0")
+    parser.add_argument('--noise', type=float, default=25.0,
+                        help="Noise of the dataset. Defaults to 25.0")
 
     return parser.parse_args()
 
