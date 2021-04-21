@@ -1,4 +1,5 @@
 import os
+import time
 import argparse
 import numpy as np
 import seaborn as sns
@@ -37,12 +38,21 @@ def getArguments():
     return parser.parse_args()
 
 
+def animate(i, dataset, costDataset, line, c_line):
+    x = dataset[0]
+    preds = dataset[1][i]
+    line.set_data(x, preds)
+    c_line.set_data(costDataset[:, :i])
+    return line, c_line
+
+
 def plotAndSaveGraphs(lr, args):
     # destructure history object
     history = lr.getHistory()
     thetaHistory = np.array(history['theta'])
     costHistory = history['cost']
     totalIterations = len(costHistory) - 1
+    costDataset = np.array([np.arange(1, totalIterations + 2), costHistory])
 
     # make directories
     if args.save:
@@ -54,32 +64,66 @@ def plotAndSaveGraphs(lr, args):
     ax1 = fig.add_subplot(121)
 
     # plot dataset and hypothesis
-    # TODO: Animate this figure
     sns.scatterplot(x=lr.x[:, 1:].reshape(-1,), y=lr.y.reshape(-1,),
                     ax=ax1, label='Datapoint')
 
+    hypotheses = []
     fullData = np.linspace(lr.x.min(), lr.x.max(), args.n_samples)
-    fullData = np.concatenate((np.ones((fullData.shape[0], 1)),
-                               fullData.reshape(-1, 1)), axis=1)
-    fullDataPrediction = lr.getPrediction(fullData.reshape(-1, 2), lr.theta).reshape(-1,)
+    fullDataWithOnes = np.concatenate((np.ones((fullData.shape[0], 1)),
+                                       fullData.reshape(-1, 1)), axis=1)
 
-    sns.lineplot(x=fullData[:, 1:].reshape(-1,), y=fullDataPrediction,
-                 color='r', label='Hypothesis', alpha=0.6)
+    for theta in thetaHistory:
+        theta = np.array(theta).reshape(-1, 1)
+        fullDataPrediction = lr.getPrediction(fullDataWithOnes.reshape(-1, 2), theta).reshape(-1,)
+        hypotheses.append(fullDataPrediction)
+
+    dataset = np.array([fullData, hypotheses], dtype=object)
+
+    line = ax1.plot(dataset[0], dataset[1][-1], c='r', label='Hypothesis',
+                    alpha=0.6)[0]
 
     ax1.set_xlabel('X')
     ax1.set_ylabel('Y')
     ax1.set_title('Training Dataset')
+    ax1.legend()
 
     ax2 = fig.add_subplot(122)
 
     # plot training cost history
-    sns.lineplot(x=np.arange(1, totalIterations + 2), y=costHistory,
-                 ax=ax2, label='Cost')
+    c_line = ax2.plot(costDataset[0], costDataset[1], label='Cost')[0]
     ax2.set_xlabel('Number of iterations')
     ax2.set_ylabel('Cost')
     ax2.set_title(f'Iterations: {totalIterations} lr: {args.lr} batch_size: {args.batch_size}')
     ax2.legend()
-    plt.show()
+
+    lengthOfVideo = args.length
+    nFrames = totalIterations + 1
+    interval = lengthOfVideo * 1000 / nFrames
+    fps = (1 / (interval / 1000))
+
+    print('=' * 80)
+    print('[INFO]\t\tParameters for Animation')
+    print('=' * 80)
+    print(f'[INFO] Duration of video: {lengthOfVideo} seconds')
+    print(f'[DEBUG] Total number of frames: {nFrames}')
+    print(f'[DEBUG] Interval for each frame: {interval}')
+    print(f'[DEBUG] FPS of video: {fps}')
+    print('=' * 80)
+
+    ani = animation.FuncAnimation(fig, animate, fargs=(dataset, costDataset, line, c_line),
+                                  frames=nFrames, blit=False,
+                                  interval=interval, repeat=True)
+
+    if args.save:
+        fileName = os.path.join(pathToDirectory, 'LinearRegression2D.mp4')
+        print('[INFO] Saving animation...')
+        startTime = time.time()
+        ani.save(fileName, fps=fps)
+        timeDifference = time.time() - startTime
+        print(f'[INFO] Animation saved to {fileName}. Took {timeDifference:.2f} seconds.')
+        plt.close()
+    else:
+        plt.show()
 
     # plot distribution of theta
     fig = plt.figure(figsize=(16, 9))
@@ -113,7 +157,7 @@ def main():
     x, y = make_regression(n_samples=args.n_samples,
                            n_features=1,
                            noise=args.noise,
-                           bias=2,
+                           bias=np.random.uniform(-200, 200),
                            random_state=42)
 
     if args.scale:
