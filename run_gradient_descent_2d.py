@@ -26,6 +26,8 @@ def getArguments():
                         help='Flag to initialize a random starting point')
     parser.add_argument('-s', '--save', action='store_true',
                         help="Flag to save visualizations and animations")
+    parser.add_argument('-l', '--length', type=int, default=5,
+                        help="Length of the animation in seconds. Defaults to 5")
 
     return parser.parse_args()
 
@@ -58,7 +60,7 @@ def plotAndSaveGraphs(gd, args):
     ax.set_ylabel('f(x)')
     ax.legend()
 
-    lengthOfVideo = 5
+    lengthOfVideo = args.length
     nFrames = totalIterations + 1
     interval = lengthOfVideo * 1000 / nFrames
     fps = (1 / (interval / 1000))
@@ -74,7 +76,7 @@ def plotAndSaveGraphs(gd, args):
 
     ani = animation.FuncAnimation(fig, animate, fargs=(dataset, line),
                                   frames=nFrames, blit=False,
-                                  interval=interval, repeat=False)
+                                  interval=interval, repeat=True)
 
     # make directories
     if args.save:

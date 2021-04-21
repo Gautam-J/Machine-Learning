@@ -27,7 +27,9 @@ def getArguments():
     parser.add_argument('-r', '--random', action='store_true',
                         help='Flag to initialize a random starting point')
     parser.add_argument('-s', '--save', action='store_true',
-                        help="Flag to plot visualizations and save animations")
+                        help="Flag to save visualizations and animations")
+    parser.add_argument('-l', '--length', type=int, default=5,
+                        help="Length of the animation in seconds. Defaults to 5")
 
     return parser.parse_args()
 
@@ -41,17 +43,17 @@ def animate(i, dataset, line, c_line):
 
 def plotAndSaveGraphs(gd, args):
     fig = plt.figure(figsize=(16, 9))
-    ax = fig.add_subplot(121, projection='3d')
-    ax2 = fig.add_subplot(122)
-    ax.view_init(elev=30, azim=130)
+    ax1 = fig.add_subplot(121, projection='3d')
+    ax1.view_init(elev=30, azim=130)
 
     x = np.linspace(-6, 6, 25)
     y = np.linspace(-6, 6, 25)
     X, Y = np.meshgrid(x, y)  # all possible combinations of x and y
     Z = gd.f(X, Y)
-    ax.plot_surface(X, Y, Z, cmap='gray', alpha=0.8)
+    ax1.plot_surface(X, Y, Z, cmap='gray', alpha=0.8)
 
     levels = np.linspace(0, 500, 30)
+    ax2 = fig.add_subplot(122)
     ax2.contourf(X, Y, Z, levels, cmap='jet', alpha=0.5)
 
     # destructure history object
@@ -64,16 +66,16 @@ def plotAndSaveGraphs(gd, args):
     yGradHistory = history['gradsY']
     totalIterations = len(xHistory) - 1
 
-    line = ax.plot(dataset[0], dataset[1], dataset[2], label='optimization', c='r', marker='.', alpha=0.4)[0]
-    ax.set_title(f'Iterations: {totalIterations} lr: {args.lr}')
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('f(x, y)')
-    ax.legend()
+    line = ax1.plot(dataset[0], dataset[1], dataset[2], label='optimization', c='r', marker='.', alpha=0.4)[0]
+    ax1.set_title(f'Iterations: {totalIterations} lr: {args.lr}')
+    ax1.set_xlabel('X')
+    ax1.set_ylabel('Y')
+    ax1.set_zlabel('f(x, y)')
+    ax1.legend()
 
     c_line = ax2.plot(dataset[0], dataset[1], label='optimization', c='r', marker='.', alpha=0.4)[0]
 
-    lengthOfVideo = 5
+    lengthOfVideo = args.length
     nFrames = totalIterations + 1
     interval = lengthOfVideo * 1000 / nFrames
     fps = (1 / (interval / 1000))
@@ -88,25 +90,27 @@ def plotAndSaveGraphs(gd, args):
     print('=' * 80)
 
     ani = animation.FuncAnimation(fig, animate, frames=nFrames, blit=False,
-                                  interval=interval, repeat=False,
+                                  interval=interval, repeat=True,
                                   fargs=(dataset, line, c_line))
 
     # make directories
-    pathToDirectory = os.path.join('visualizations', 'gradient_descent')
-    if not os.path.exists(pathToDirectory):
-        os.makedirs(pathToDirectory)
+    if args.save:
+        pathToDirectory = os.path.join('visualizations', 'gradient_descent')
+        if not os.path.exists(pathToDirectory):
+            os.makedirs(pathToDirectory)
 
     # save animation
-    fileName = os.path.join(pathToDirectory, 'GradientDescent3D.mp4')
-    print('[INFO] Saving animation...')
-    startTime = time.time()
-    ani.save(fileName, fps=fps)
-    timeDifference = time.time() - startTime
-    print(f'[INFO] Animation saved to {fileName}. Took {timeDifference:.2f} seconds.')
-    plt.close()
+    if args.save:
+        fileName = os.path.join(pathToDirectory, 'GradientDescent3D.mp4')
+        print('[INFO] Saving animation...')
+        startTime = time.time()
+        ani.save(fileName, fps=fps)
+        timeDifference = time.time() - startTime
+        print(f'[INFO] Animation saved to {fileName}. Took {timeDifference:.2f} seconds.')
+        plt.close()
+    else:
+        plt.show()
 
-    # save distribution of gradients
-    fileName = os.path.join(pathToDirectory, 'DistributionOfGradients3D.png')
     fig = plt.figure(figsize=(8, 6))
 
     ax1 = fig.add_subplot(121)
@@ -119,9 +123,14 @@ def plotAndSaveGraphs(gd, args):
     ax2.set_xlabel('Gradients of y')
     ax2.set_title('Distribution of Gradients in y-axis')
 
-    plt.savefig(fileName)
-    print(f'[INFO] Distribution of gradients saved to {fileName}')
-    plt.close()
+    # save distribution of gradients
+    if args.save:
+        fileName = os.path.join(pathToDirectory, 'DistributionOfGradients3D.png')
+        plt.savefig(fileName)
+        print(f'[INFO] Distribution of gradients saved to {fileName}')
+        plt.close()
+    else:
+        plt.show()
 
 
 def main():
@@ -142,8 +151,7 @@ def main():
     print('[DEBUG]\t\t[-2.805118, 3.131312]')
     print('[DEBUG]\t\t[3, 2]')
 
-    if args.save:
-        plotAndSaveGraphs(gd, args)
+    plotAndSaveGraphs(gd, args)
 
 
 if __name__ == '__main__':
