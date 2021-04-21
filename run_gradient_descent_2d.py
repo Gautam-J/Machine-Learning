@@ -25,46 +25,38 @@ def getArguments():
     parser.add_argument('-r', '--random', action='store_true',
                         help='Flag to initialize a random starting point')
     parser.add_argument('-s', '--save', action='store_true',
-                        help="Flag to plot visualizations and save animations")
+                        help="Flag to save visualizations and animations")
 
     return parser.parse_args()
 
 
+def animate(i, dataset, line):
+    line.set_data(dataset[:, :i])
+    return line
+
+
 def plotAndSaveGraphs(gd, args):
     fig = plt.figure(figsize=(16, 9))
-    ax1 = fig.add_subplot(111)
 
     # plot the original function
+    ax = fig.add_subplot(111)
     x = np.linspace(-2.5, 1, 1000)
     y = gd.f(x)
-    ax1.plot(x, y, c='b', label='function', alpha=0.6)
+    ax.plot(x, y, c='b', label='function', alpha=0.6)
 
     # destructure history object
     history = gd.getHistory()
     gradientHistory = history['grads']
     xHistory = history['x']
-    yHistory = [gd.f(i) for i in history['x']]
+    yHistory = gd.f(np.array(xHistory))
+    dataset = np.array([xHistory, yHistory])
     totalIterations = len(xHistory) - 1
 
-    scatter_x, scatter_y = [], []
-    line1, = ax1.plot(scatter_x, scatter_y, label='optimization', c='r', marker='.', alpha=0.4)
-    ax1.set_title(f'Iterations: {totalIterations} lr: {args.lr}')
-    ax1.set_xlabel('X')
-    ax1.set_ylabel('f(x)')
-    ax1.legend()
-
-    def init():
-        line1.set_data([], [])
-        return line1,
-
-    def animate(i):
-        x = xHistory[i]
-        y = yHistory[i]
-        scatter_x.append(x)
-        scatter_y.append(y)
-
-        line1.set_data(scatter_x, scatter_y)
-        return line1,
+    line = ax.plot(dataset[0], dataset[1], label='optimization', c='r', marker='.', alpha=0.4)[0]
+    ax.set_title(f'Iterations: {totalIterations} lr: {args.lr}')
+    ax.set_xlabel('X')
+    ax.set_ylabel('f(x)')
+    ax.legend()
 
     lengthOfVideo = 5
     nFrames = totalIterations + 1
@@ -80,32 +72,40 @@ def plotAndSaveGraphs(gd, args):
     print(f'[DEBUG] FPS of video: {fps}')
     print('=' * 80)
 
-    ani = animation.FuncAnimation(fig, animate, init_func=init,
-                                  frames=nFrames, blit=True,
+    ani = animation.FuncAnimation(fig, animate, fargs=(dataset, line),
+                                  frames=nFrames, blit=False,
                                   interval=interval, repeat=False)
 
     # make directories
-    pathToDirectory = os.path.join('visualizations', 'gradient_descent')
-    if not os.path.exists(pathToDirectory):
-        os.makedirs(pathToDirectory)
+    if args.save:
+        pathToDirectory = os.path.join('visualizations', 'gradient_descent')
+        if not os.path.exists(pathToDirectory):
+            os.makedirs(pathToDirectory)
 
     # save animation
-    fileName = os.path.join(pathToDirectory, 'GradientDescent2D.mp4')
-    print('[INFO] Saving animation...')
-    startTime = time.time()
-    ani.save(fileName, fps=fps)
-    timeDifference = time.time() - startTime
-    print(f'[INFO] Animation saved to {fileName}. Took {timeDifference:.2f} seconds.')
-    plt.close()
+    if args.save:
+        fileName = os.path.join(pathToDirectory, 'GradientDescent2D.mp4')
+        print('[INFO] Saving animation...')
+        startTime = time.time()
+        ani.save(fileName, fps=fps)
+        timeDifference = time.time() - startTime
+        print(f'[INFO] Animation saved to {fileName}. Took {timeDifference:.2f} seconds.')
+        plt.close()
+    else:
+        plt.show()
 
-    # save distribution of gradients
-    fileName = os.path.join(pathToDirectory, 'DistributionOfGradients2D.png')
     sns.kdeplot(x=gradientHistory, fill=True)
     plt.xlabel('Gradients')
     plt.title('Distribution of Gradients')
-    plt.savefig(fileName)
-    print(f'[INFO] Distribution of gradients saved to {fileName}')
-    plt.close()
+
+    # save distribution of gradients
+    if args.save:
+        fileName = os.path.join(pathToDirectory, 'DistributionOfGradients2D.png')
+        plt.savefig(fileName)
+        print(f'[INFO] Distribution of gradients saved to {fileName}')
+        plt.close()
+    else:
+        plt.show()
 
 
 def main():
@@ -121,8 +121,7 @@ def main():
     print(f'[DEBUG] Value of x: {gd.x:.2f}')
     print('[DEBUG] Expected value: -1.59791')
 
-    if args.save:
-        plotAndSaveGraphs(gd, args)
+    plotAndSaveGraphs(gd, args)
 
 
 if __name__ == "__main__":
