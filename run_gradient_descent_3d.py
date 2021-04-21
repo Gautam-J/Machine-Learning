@@ -135,6 +135,8 @@ def plotAndSaveGraphs(gd, args):
 
 def main():
     args = getArguments()
+    print('[DEBUG]', args)
+
     start_point = [args.start_x, args.start_y]
 
     gd = GradientDescent3D(alpha=args.lr,
