@@ -22,7 +22,7 @@ class LogisticRegression:
 
         initialPrediction = self.getPrediction(self.x, self.theta)
         initialCost = self.getCost(initialPrediction, self.y)
-        self.history['cost'].append(initialCost)
+        self.history['cost'].append(initialCost.tolist()[0][0])
 
         self.prevTheta = self.theta
         self.printStats()
@@ -58,7 +58,7 @@ class LogisticRegression:
 
                 # log metrics
                 self.history['theta'].append(self.theta.squeeze().tolist())
-                self.history['cost'].append(cost)
+                self.history['cost'].append(cost.tolist()[0][0])
 
                 if self.isConverged():
                     print(f'[INFO] Gradient Descent converged at Epoch: {i + 1}, iteration: {j + 1}')
