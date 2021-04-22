@@ -77,8 +77,7 @@ def plotAndSaveGraphs(lr, args, scaler):
     sns.scatterplot(x=x1_1, y=x2_1, label='1', ax=ax1)
 
     hypotheses = []
-    xs = np.linspace(x[:, 0].min(), x[:, 0].max(), args.n_samples)
-    fullData = (xs - x[:, 0].mean()) / x[:, 0].std()
+    fullData = np.linspace(x[:, 0].min(), x[:, 0].max(), args.n_samples)
 
     for theta in thetaHistory:
         h = - (theta[0] + fullData * theta[1]) / theta[2]
