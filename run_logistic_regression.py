@@ -121,7 +121,7 @@ def plotAndSaveGraphs(lr, args, scaler):
                                   interval=interval, repeat=True)
 
     if args.save:
-        fileName = os.path.join(pathToDirectory, 'LogisticRegression2D.mp4')
+        fileName = os.path.join(pathToDirectory, 'DecisionBoundary.mp4')
         print('[INFO] Saving animation...')
         startTime = time.time()
         ani.save(fileName, fps=fps)
@@ -143,7 +143,7 @@ def plotAndSaveGraphs(lr, args, scaler):
     fig.suptitle('Distribution of Theta')
 
     if args.save:
-        fileName = os.path.join(pathToDirectory, 'DistributionOfGradients2D.png')
+        fileName = os.path.join(pathToDirectory, 'DistributionOfGradients.png')
         plt.savefig(fileName)
         print(f'[INFO] Distribution of gradients saved to {fileName}')
         plt.close()
