@@ -56,7 +56,7 @@ def animate(i, dataset, costDataset, line, c_line):
     return line, c_line
 
 
-def plotAndSaveGraphs(lr, args, scaler):
+def plotAndSaveGraphs(lr, args):
 
     # destructure history object
     history = lr.getHistory()
@@ -73,7 +73,6 @@ def plotAndSaveGraphs(lr, args, scaler):
 
     fullData = np.linspace(lr.x[:, 1].min(), lr.x[:, 1].max(), 100).reshape(-1, 1)
     squared = np.concatenate((fullData, (fullData[:, 0]**2).reshape(-1, 1)), axis=1)
-    squared = scaler.transform(squared)
 
     fullDataWithOnes = np.concatenate((np.ones((squared.shape[0], 1)), squared), axis=1)
 
@@ -98,9 +97,6 @@ def plotAndSaveGraphs(lr, args, scaler):
     ax1.set_ylabel('Y')
     ax1.set_title('Training Dataset')
     ax1.legend()
-
-    minY, maxY = np.array(hypotheses).min(), np.array(hypotheses).max()
-    ax1.set_ylim(minY, maxY + 5)
 
     ax2 = fig.add_subplot(122)
 
@@ -130,7 +126,7 @@ def plotAndSaveGraphs(lr, args, scaler):
                                   interval=interval, repeat=True)
 
     if args.save:
-        fileName = os.path.join(pathToDirectory, 'LinearRegressionNonLinear2D.mp4')
+        fileName = os.path.join(pathToDirectory, 'NonLinearLinearRegression.mp4')
         print('[INFO] Saving animation...')
         startTime = time.time()
         ani.save(fileName, fps=fps)
@@ -164,7 +160,7 @@ def plotAndSaveGraphs(lr, args, scaler):
     ax3.legend()
 
     if args.save:
-        fileName = os.path.join(pathToDirectory, 'DistributionOfGradientsNonLinear2D.png')
+        fileName = os.path.join(pathToDirectory, 'NonLinearDistributionOfGradients.png')
         plt.savefig(fileName)
         print(f'[INFO] Distribution of gradients saved to {fileName}')
         plt.close()
@@ -179,11 +175,12 @@ def main():
     x, y = getCircularDataset(n_samples=args.n_samples,
                               noise=args.noise)
 
-    nf = x[:, 0]**2
-    x = np.concatenate((x, nf.reshape(-1, 1)), axis=1)
-
+    # FIXME: Add scaler only to x and NOT to x**2
     scaler = StandardScaler()
     x = scaler.fit_transform(x)
+
+    nf = x[:, 0]**2
+    x = np.concatenate((x, nf.reshape(-1, 1)), axis=1)
 
     lr = LinearRegression(x,
                           y.reshape(-1, 1),
@@ -207,7 +204,7 @@ def main():
     print(f'[DEBUG] Optimized Theta: {optimizedTheta.tolist()}')
     print(f'[DEBUG] Optimized Cost: {optimizedCost}')
 
-    plotAndSaveGraphs(lr, args, scaler)
+    plotAndSaveGraphs(lr, args)
 
 
 if __name__ == "__main__":

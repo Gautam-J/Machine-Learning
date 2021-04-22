@@ -113,7 +113,7 @@ def plotAndSaveGraphs(lr, args):
                                   interval=interval, repeat=True)
 
     if args.save:
-        fileName = os.path.join(pathToDirectory, 'LinearRegression2D.mp4')
+        fileName = os.path.join(pathToDirectory, 'LinearRegression.mp4')
         print('[INFO] Saving animation...')
         startTime = time.time()
         ani.save(fileName, fps=fps)
@@ -140,7 +140,7 @@ def plotAndSaveGraphs(lr, args):
     ax4.legend()
 
     if args.save:
-        fileName = os.path.join(pathToDirectory, 'DistributionOfGradients2D.png')
+        fileName = os.path.join(pathToDirectory, 'DistributionOfGradients.png')
         plt.savefig(fileName)
         print(f'[INFO] Distribution of gradients saved to {fileName}')
         plt.close()
