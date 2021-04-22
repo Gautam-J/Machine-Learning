@@ -28,8 +28,6 @@ def getArguments():
                         help="Length of the animation in seconds. Defaults to 5")
     parser.add_argument('-b', '--batch_size', type=int, default=10,
                         help="Batch size to be taken for mini-batch gradient descent. Defaults to 10")
-    parser.add_argument('--scale', type=bool, default=True,
-                        help="Flag to perform mean normalization and feature scaling. Defaults to True")
     parser.add_argument('-m', '--n_samples', type=int, default=200,
                         help="Number of training examples. Defaults to 200")
     parser.add_argument('--noise', type=float, default=25.0,
@@ -160,9 +158,8 @@ def main():
                            bias=np.random.uniform(-200, 200),
                            random_state=42)
 
-    if args.scale:
-        scaler = StandardScaler()
-        x = scaler.fit_transform(x)
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
 
     lr = LinearRegression(x,
                           y.reshape(-1, 1),

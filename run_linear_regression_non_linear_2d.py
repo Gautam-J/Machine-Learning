@@ -27,8 +27,6 @@ def getArguments():
                         help="Length of the animation in seconds. Defaults to 5")
     parser.add_argument('-b', '--batch_size', type=int, default=10,
                         help="Batch size to be taken for mini-batch gradient descent. Defaults to 10")
-    parser.add_argument('--scale', type=bool, default=True,
-                        help="Flag to perform mean normalization and feature scaling. Defaults to True")
     parser.add_argument('-m', '--n_samples', type=int, default=200,
                         help="Number of training examples. Defaults to 200")
     parser.add_argument('--noise', type=float, default=0.7,
@@ -75,9 +73,7 @@ def plotAndSaveGraphs(lr, args, scaler):
 
     fullData = np.linspace(lr.x[:, 1].min(), lr.x[:, 1].max(), 100).reshape(-1, 1)
     squared = np.concatenate((fullData, (fullData[:, 0]**2).reshape(-1, 1)), axis=1)
-
-    if scaler:
-        squared = scaler.transform(squared)
+    squared = scaler.transform(squared)
 
     fullDataWithOnes = np.concatenate((np.ones((squared.shape[0], 1)), squared), axis=1)
 
@@ -186,11 +182,8 @@ def main():
     nf = x[:, 0]**2
     x = np.concatenate((x, nf.reshape(-1, 1)), axis=1)
 
-    if args.scale:
-        scaler = StandardScaler()
-        x = scaler.fit_transform(x)
-    else:
-        scaler = None
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
 
     lr = LinearRegression(x,
                           y.reshape(-1, 1),
