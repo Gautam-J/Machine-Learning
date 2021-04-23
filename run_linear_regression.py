@@ -44,7 +44,7 @@ def animate(i, dataset, costDataset, line, c_line):
     return line, c_line
 
 
-def plotAndSaveGraphs(lr, args):
+def plotAndSaveGraphs(lr, args, scaler):
     # destructure history object
     history = lr.getHistory()
     thetaHistory = np.array(history['theta'])
@@ -66,9 +66,10 @@ def plotAndSaveGraphs(lr, args):
                     ax=ax1, label='Datapoint')
 
     hypotheses = []
-    fullData = np.linspace(lr.x.min(), lr.x.max(), args.n_samples)
+    fullData = np.linspace(lr.x.min(), lr.x.max(), args.n_samples).reshape(-1, 1)
+    fullData = scaler.transform(fullData)
     fullDataWithOnes = np.concatenate((np.ones((fullData.shape[0], 1)),
-                                       fullData.reshape(-1, 1)), axis=1)
+                                       fullData), axis=1)
 
     for theta in thetaHistory:
         theta = np.array(theta).reshape(-1, 1)
@@ -183,7 +184,7 @@ def main():
     print(f'[DEBUG] Optimized Theta: {optimizedTheta.tolist()}')
     print(f'[DEBUG] Optimized Cost: {optimizedCost}')
 
-    plotAndSaveGraphs(lr, args)
+    plotAndSaveGraphs(lr, args, scaler)
 
 
 if __name__ == "__main__":

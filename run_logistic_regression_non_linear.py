@@ -55,6 +55,7 @@ def plotAndSaveGraphs(lr, args, scaler):
     ys = np.linspace(lr.x[:, 2].min(), lr.x[:, 2].max(), 500)
     X, Y = np.meshgrid(xs, ys)
     temp = np.c_[X.ravel(), Y.ravel(), (X**2).ravel(), (Y**2).ravel()]
+    temp = scaler.transform(temp)
     fullData = np.c_[np.ones((temp.shape[0], 1)), temp]
 
     # make directories
@@ -156,6 +157,22 @@ def plotAndSaveGraphs(lr, args, scaler):
     else:
         plt.show()
 
+    plt.scatter(x1_0, x2_0, label='0', c='k', alpha=0.7)
+    plt.scatter(x1_1, x2_1, label='1', c='g', alpha=0.7)
+    plt.contour(X, Y, lr.getLinearPrediction(fullData, thetaHistory[-1]).reshape(X.shape), [0], cmap='coolwarm')
+    plt.xlabel('X1')
+    plt.ylabel('X2')
+    plt.legend()
+    plt.title('Training Data with Decision Boundary')
+
+    if args.save:
+        fileName = os.path.join(pathToDirectory, 'NonLinearTrainingDataWithDecisionBoundary.png')
+        plt.savefig(fileName)
+        print(f'[INFO] Training Data with Decision Boundary Plot saved to {fileName}')
+        plt.close()
+    else:
+        plt.show()
+
 
 def main():
     args = getArguments()
@@ -166,15 +183,15 @@ def main():
                         factor=0.3,
                         random_state=42)
 
-    scaler = StandardScaler()
-    x = scaler.fit_transform(x)
-
     x1Squared = x[:, 0]**2
     x2Squared = x[:, 1]**2
 
     x = np.concatenate((x, x1Squared.reshape(-1, 1)), axis=1)
     x = np.concatenate((x, x2Squared.reshape(-1, 1)), axis=1)
     y = y.reshape(-1, 1)
+
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
 
     lr = LogisticRegression(x=x,
                             y=y,

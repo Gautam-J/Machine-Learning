@@ -56,7 +56,7 @@ def animate(i, dataset, costDataset, line, c_line):
     return line, c_line
 
 
-def plotAndSaveGraphs(lr, args):
+def plotAndSaveGraphs(lr, args, scaler):
 
     # destructure history object
     history = lr.getHistory()
@@ -73,6 +73,7 @@ def plotAndSaveGraphs(lr, args):
 
     fullData = np.linspace(lr.x[:, 1].min(), lr.x[:, 1].max(), 100).reshape(-1, 1)
     squared = np.concatenate((fullData, (fullData[:, 0]**2).reshape(-1, 1)), axis=1)
+    squared = scaler.transform(squared)
 
     fullDataWithOnes = np.concatenate((np.ones((squared.shape[0], 1)), squared), axis=1)
 
@@ -175,12 +176,11 @@ def main():
     x, y = getCircularDataset(n_samples=args.n_samples,
                               noise=args.noise)
 
-    # FIXME: Add scaler only to x and NOT to x**2
-    scaler = StandardScaler()
-    x = scaler.fit_transform(x)
-
     nf = x[:, 0]**2
     x = np.concatenate((x, nf.reshape(-1, 1)), axis=1)
+
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
 
     lr = LinearRegression(x,
                           y.reshape(-1, 1),
@@ -204,7 +204,7 @@ def main():
     print(f'[DEBUG] Optimized Theta: {optimizedTheta.tolist()}')
     print(f'[DEBUG] Optimized Cost: {optimizedCost}')
 
-    plotAndSaveGraphs(lr, args)
+    plotAndSaveGraphs(lr, args, scaler)
 
 
 if __name__ == "__main__":
