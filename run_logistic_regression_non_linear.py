@@ -14,7 +14,7 @@ plt.style.use('seaborn')
 
 
 def getArguments():
-    parser = argparse.ArgumentParser(description='Parameters to tweak Linear Regression.')
+    parser = argparse.ArgumentParser(description='Parameters to tweak Logistic Regression.')
 
     parser.add_argument('--lr', type=float, default=3e-2,
                         help='Learning rate. Defaults to 0.03')
