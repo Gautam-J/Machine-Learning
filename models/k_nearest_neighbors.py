@@ -7,17 +7,19 @@ class KNearestNeighbors:
         self.k = k
         self.x = x
         self.y = y
+        print(f'[INFO] Shape of x: {self.x.shape}')
+        print(f'[INFO] Shape of y: {self.y.shape}')
         print(f'[INFO] Value of k: {self.k}')
 
         self.initializeModel()
 
     def initializeModel(self):
-        self.dataset = []
+        self.dataset = {}
 
         for i in np.unique(self.y):
             indices = np.where(self.y == i)[0]
             class_data = self.x[indices, :]
-            self.dataset.append(class_data)
+            self.dataset[i] = class_data
 
     def getPrediction(self, newData):
         self.calculateDistances(newData)
@@ -34,9 +36,8 @@ class KNearestNeighbors:
     def calculateDistances(self, newData):
         self.distances = []
 
-        for i, class_ in enumerate(self.dataset):
+        for i, class_ in self.dataset.items():
             for features in class_:
-                features = np.array(features)
                 # calculate euclidean distance between a single feature point and new_data to be classified
                 euclideanDistance = np.sqrt(np.sum((features - newData)**2))
                 self.distances.append([euclideanDistance, i, features])
