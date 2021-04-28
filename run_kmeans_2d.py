@@ -52,11 +52,12 @@ def plotAndSaveGraphs(km, args):
     ax1.legend()
 
     ax2 = fig.add_subplot(122)
+    c = ['r', 'g', 'b', 'k', 'c', 'm']
 
     # scatter all available data color coded according to the class
     for i in range(km.k):
-        sns.scatterplot(x=[km.centroids[i][0]], y=[km.centroids[i][1]], s=100, label=f'Centroid {i + 1}', ax=ax2)
-        sns.scatterplot(dataset[i][:, 0], dataset[i][:, 1], label=f'Class {i + 1}', ax=ax2)
+        sns.scatterplot(x=[km.centroids[i][0]], y=[km.centroids[i][1]], s=100, label=f'Centroid {i + 1}', ax=ax2, color=c[i])
+        sns.scatterplot(dataset[i][:, 0], dataset[i][:, 1], label=f'Class {i + 1}', ax=ax2, color=c[i], alpha=0.5)
 
     ax2.set_xlabel('Feature 1')
     ax2.set_ylabel('Feature 2')
