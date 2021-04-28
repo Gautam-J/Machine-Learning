@@ -4,6 +4,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
 
 from models.k_means import KMeans
 
@@ -81,7 +82,10 @@ def main():
                       centers=args.n_classes,
                       cluster_std=args.noise,
                       n_features=2,
-                      random_state=7)
+                      random_state=1)
+
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
 
     km = KMeans(x, k=args.n_classes)
     km.setCentroids()

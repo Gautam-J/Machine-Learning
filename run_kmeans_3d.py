@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
 
 from models.k_means import KMeans
 
@@ -95,6 +96,9 @@ def main():
                       cluster_std=args.noise,
                       n_features=3,
                       random_state=7)
+
+    scaler = StandardScaler()
+    x = scaler.fit_transform(x)
 
     km = KMeans(x, k=args.n_classes)
     km.setCentroids()
