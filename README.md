@@ -81,6 +81,8 @@ This was achieved by adding polynomial features.
 
 Link to first Reddit [post](https://www.reddit.com/r/Python/comments/gns9rb/linear_regression_using_gradient_descent_3_types/?utm_source=share&utm_medium=web2x&context=3)
 
+Link to second Reddit [post](https://www.reddit.com/r/Python/comments/n31by9/visualization_of_ml_algorithms/)
+
 ## Citations
 
 Sentdex: [ML from scratch](https://youtube.com/playlist?list=PLQVvvaa0QuDfKTOs3Keq_kaG2P55YRn5v)
