@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 
 from algorithms.gradient_descent_2d import GradientDescent2D
+from algorithms.momentum_2d import Momentum2D
 
 plt.style.use('seaborn')
 
@@ -28,6 +29,10 @@ def getArguments():
                         help="Flag to save visualizations and animations")
     parser.add_argument('-l', '--length', type=int, default=5,
                         help="Length of the animation in seconds. Defaults to 5")
+    parser.add_argument('--use-momentum', action='store_true',
+                        help='Flag to use momentum in gradient descent')
+    parser.add_argument('--momentum', type=float, default=0.3,
+                        help='Momentum for gradient descent. Only used when use-momentum is True. Defaults to 0.3')
 
     return parser.parse_args()
 
@@ -114,11 +119,20 @@ def main():
     args = getArguments()
     print('[DEBUG]', args)
 
-    gd = GradientDescent2D(alpha=args.lr,
-                           max_iterations=args.max_iterations,
-                           start_point=args.start_point,
-                           random=args.random,
-                           epsilon=args.epsilon)
+    if args.use_momentum:
+        gd = Momentum2D(alpha=args.lr,
+                        max_iterations=args.max_iterations,
+                        start_point=args.start_point,
+                        random=args.random,
+                        epsilon=args.epsilon,
+                        momentum=args.momentum)
+    else:
+        gd = GradientDescent2D(alpha=args.lr,
+                               max_iterations=args.max_iterations,
+                               start_point=args.start_point,
+                               random=args.random,
+                               epsilon=args.epsilon)
+
     gd.run()
 
     print(f'[DEBUG] Value of x: {gd.x}')
