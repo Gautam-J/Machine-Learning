@@ -16,7 +16,7 @@ Implementation of different machine learning algorithms written in Python.
 
 `pip install -r requirements.txt`
 
-> NOTE: scikit-learn module is used only for accessing the datasets.
+> NOTE: scikit-learn module is used only for accessing the datasets and scalers.
 
 ## Usage
 
@@ -39,6 +39,16 @@ This project was initially started to help understand the math and intuition beh
 ### Gradient Descent 3D
 
 ![](./readme_media/GradientDescent3D.gif)
+
+### Gradient Descent with **LARGE** Momentum 2D
+
+![](./readme_media/GradientDescentWithMomentum2D.gif)
+
+### Gradient Descent with **LARGE** Momentum 3D
+
+![](./readme_media/GradientDescentWithMomentum3D.gif)
+
+> NOTE: Large value of momentum has been used to exaggerate the effect of momentum in gradient descent, for visualization purposes. The default value of momentum is set to 0.3, however 0.75 and 0.8 was used in the visualization for 2D and 3D respectively.
 
 ### Linear Regression
 
