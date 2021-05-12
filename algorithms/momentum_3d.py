@@ -1,5 +1,3 @@
-import numpy as np
-
 from .gradient_descent_3d import GradientDescent3D
 
 
@@ -8,27 +6,23 @@ class Momentum3D(GradientDescent3D):
     def __init__(self, alpha=3e-3, max_iterations=150,
                  start_point=[0.62, -6.0], epsilon=1e-3, random=False,
                  momentum=0.3):
+
+        self.momentum = momentum
+
         super().__init__(alpha=alpha, max_iterations=max_iterations,
                          start_point=start_point, epsilon=epsilon,
                          random=random)
 
-        self.momentum = momentum
-
-        self.history = {
-            "x": [],
-            'y': [],
-            'gradsX': [],
-            'gradsY': []
-        }
-
-    def setStartPoint(self, arg, random):
-        if random:
-            self.x = np.random.uniform(-6, 6, 2)
-        else:
-            self.x = np.array(arg)
-
-    def isConverged(self):
-        return (abs(self.x - self.prevX) <= self.epsilon).all()
+    def printStats(self):
+        print('=' * 80)
+        print('[INFO]\t\tHyperparameters for Momentum 2D')
+        print('=' * 80)
+        print(f'[INFO] Learning Rate: {self.alpha}')
+        print(f'[INFO] Maximum Iterations: {self.maxIterations}')
+        print(f'[INFO] Starting Point of x: {self.x}')
+        print(f'[INFO] Epsilon for checking convergence: {self.epsilon}')
+        print(f'[INFO] Momentum: {self.momentum}')
+        print('=' * 80)
 
     def run(self):
         # log the starting points
@@ -54,27 +48,3 @@ class Momentum3D(GradientDescent3D):
             if self.isConverged():
                 print('[INFO] Gradient Descent using Momentum converged at iteration', i + 1)
                 break
-
-    @staticmethod
-    def f(x, y):
-        '''
-        Himmelblau's function (four identical local minima)
-
-        Local Minima:
-            (3, 2) = 0
-            (-2.805118, 3.131312) = 0
-            (-3.779310, -3.283186) = 0
-            (3.584428, -1.848126) = 0
-        '''
-        return (x**2 + y - 11)**2 + (x + y**2 - 7)**2
-
-    @staticmethod
-    def grad_f(X):
-        x = X[0]
-        y = X[1]
-
-        # partial derivatives of the above function
-        partialX = 2 * (2 * x * (x**2 + y - 11) + x + y**2 - 7)
-        partialY = 2 * (x**2 + 2 * y * (x + y**2 - 7) + y - 11)
-
-        return np.array([partialX, partialY])

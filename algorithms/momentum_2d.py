@@ -5,10 +5,11 @@ class Momentum2D(GradientDescent2D):
 
     def __init__(self, alpha=3e-2, max_iterations=150, start_point=1.0,
                  epsilon=1e-3, momentum=0.3, random=False):
-        super().__init__(alpha=alpha, max_iterations=max_iterations,
-                         start_point=start_point, epsilon=epsilon, random=random)
 
         self.momentum = momentum
+
+        super().__init__(alpha=alpha, max_iterations=max_iterations,
+                         start_point=start_point, epsilon=epsilon, random=random)
 
     def printStats(self):
         print('=' * 80)
